@@ -1,0 +1,1 @@
+Map<Zip<Map<std::slice::Iter<'_, pair::Pair>, {closure@src/ordered_list.rs:10:51: 10:57}>, Map<std::slice::Iter<'_, pair::Pair>, {closure@src/ordered_list.rs:11:52: 11:58}>>, {closure@src/ordered_list.rs:13:57: 13:63}>
