@@ -1,0 +1,21 @@
+name: Test Day
+
+on:
+  workflow_call:
+    inputs:
+      day:
+        required: true
+        type: string
+
+env: 
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test_day:
+    name: Test Day
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup update
+      - run: cargo test result --verbose
+        working-directory: "./${{ inputs.day}}" 

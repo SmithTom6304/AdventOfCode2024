@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  run_tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        day: [day01]
+    uses: .github/workflows/test-day.yml
+    with:
+      day: ${{ matrix.day }} 
