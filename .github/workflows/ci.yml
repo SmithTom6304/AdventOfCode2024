@@ -11,6 +11,6 @@ jobs:
     strategy:
       matrix:
         day: [day01]
-    uses: .github/workflows/test-day.yml
+    uses: ./.github/workflows/test-day.yml
     with:
       day: ${{ matrix.day }} 
