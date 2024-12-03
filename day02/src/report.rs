@@ -1,4 +1,4 @@
-use std::cmp::{Ordering, PartialEq};
+use crate::Direction;
 use crate::Level;
 
 pub struct Report {
@@ -7,14 +7,18 @@ pub struct Report {
 
 impl Report {
     pub fn is_safe(&self) -> bool {
-        let direction = self.determine_direction();
+        let direction = self.levels[0].determine_direction(&self.levels[1]);
 
         if direction == Direction::Still {
             return false;
         }
 
-        for i in 1..self.levels.len() {
-            if !self.levels[i].is_safe(&self.levels[i-1], direction == Direction::Up) {
+        Self::levels_are_safe(&self.levels, direction)
+    }
+
+    fn levels_are_safe(levels: &[Level], direction: Direction) -> bool {
+        for i in 1..levels.len() {
+            if !levels[i].is_safe(&levels[i-1], direction == Direction::Up) {
                 return false;
             }
         }
@@ -23,43 +27,24 @@ impl Report {
     }
 
     pub fn is_safe_with_dampeners(&self) -> bool {
-        let mut has_been_dampened = false;
-
-        let direction = self.determine_direction();
-
-        if direction == Direction::Still {
-            if has_been_dampened {
-                return false;
-            }
-            has_been_dampened = true;
-        }
-
-        for i in 1..self.levels.len() {
-            if !self.levels[i].is_safe(&self.levels[i-1], direction == Direction::Up) {
-                if has_been_dampened {
-                    return false;
+        // Not exactly clever...
+        for level_to_skip in 0..self.levels.len() {
+            let mut levels = vec![];
+            for level in 0 .. self.levels.len() {
+                if level == level_to_skip {
+                    continue;
                 }
-                has_been_dampened = true;
+                levels.push(self.levels[level]);
+            }
+            let direction = levels[0].determine_direction(&levels[1]);
+            if Self::levels_are_safe(&levels, direction) {
+                return true;
             }
         }
 
-        true
+        false
     }
 
-    fn determine_direction(&self) -> Direction {
-        match &self.levels[0].cmp(&self.levels[1]) {
-            Ordering::Less => Direction::Up,
-            Ordering::Equal => Direction::Still,
-            Ordering::Greater => Direction::Down,
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Eq)]
-enum Direction {
-    Up,
-    Down,
-    Still
 }
 
 impl TryFrom<&str> for Report {

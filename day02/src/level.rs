@@ -1,11 +1,28 @@
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+use std::cmp::Ordering;
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Level(pub i8);
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum Direction {
+    Up,
+    Down,
+    Still
+}
 
 impl Level {
     pub fn is_safe(&self, previous: &Level, going_up: bool) -> bool {
         match going_up {
             true => previous.0 < self.0 && self.0 <= previous.0 + 3,
             false => previous.0 > self.0 && self.0 >= previous.0 - 3,
+        }
+    }
+
+    pub fn determine_direction(&self, other: &Level) -> Direction {
+        match &self.cmp(other) {
+            Ordering::Less => Direction::Up,
+            Ordering::Equal => Direction::Still,
+            Ordering::Greater => Direction::Down,
         }
     }
 }
