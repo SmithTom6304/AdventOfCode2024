@@ -8,6 +8,24 @@ impl InstructionSetFilter {
         let res = regex.find_iter(value).map(|mat| mat.as_str()).collect::<Vec<&str>>();
         res
     }
+
+    pub fn filter_with_toggles(value: &str) -> Vec<&str> {
+        let regex = Regex::new(r"(do\(\))|(don't\(\))|((mul\()\d{1,3},\d{1,3}\))").unwrap();
+        let values = regex.find_iter(value).map(|mat| mat.as_str()).collect::<Vec<&str>>();
+
+        let mut instructions_to_return: Vec<&str> = Vec::new();
+        let mut add_instructions = true;
+
+        for value in values {
+            match value {
+                "do()" => add_instructions = true,
+                "don't()" => add_instructions = false,
+                _ => { if add_instructions { instructions_to_return.push(value) } }
+            }
+        }
+
+        instructions_to_return
+    }
 }
 
 #[cfg(test)]
